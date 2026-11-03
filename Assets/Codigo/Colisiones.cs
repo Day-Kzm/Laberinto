@@ -10,21 +10,28 @@ public class DetectorColisionPared : MonoBehaviour
     [SerializeField]
     Material materialParedTocada;
 
-    bool paredRoja = false;
+    [SerializeField]
+    float duracionEnRojo = 3f;
 
-    float tiempoEnRojo = 3f;
+    bool paredRoja = false;
+    float tiempoEnRojo;
+    MeshRenderer meshRenderer;
+
+    private void Start()
+    {
+        meshRenderer = GetComponent<MeshRenderer>();
+    }
 
     //Funcion que se ejecuta por cada imagen del juego
     private void Update()
     {
-        if (paredRoja == true)
+        if (paredRoja)
         {
-            tiempoEnRojo = tiempoEnRojo - Time.deltaTime;
+            tiempoEnRojo -= Time.deltaTime;
             if (tiempoEnRojo < 0.0f)
             {
-                gameObject.GetComponent<MeshRenderer>().material = materialPorDefecto;
+                meshRenderer.material = materialPorDefecto;
                 paredRoja = false;
-                //tiempoEnRojo = 3f;
             }
         }
     }
@@ -32,10 +39,11 @@ public class DetectorColisionPared : MonoBehaviour
     //Funcion que se ejecuta al chocar un objeto con este GameObject.
     private void OnCollisionEnter(Collision col)
     {
-        if (col.gameObject.tag == "Player")
+        if (col.gameObject.CompareTag("Player"))
         {
-            gameObject.GetComponent<MeshRenderer>().material = materialParedTocada;
+            meshRenderer.material = materialParedTocada;
             paredRoja = true;
+            tiempoEnRojo = duracionEnRojo;
         }
     }
 }
